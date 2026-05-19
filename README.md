@@ -114,3 +114,12 @@ npm run build
 ## Notes RNCP
 
 Le projet met en avant une architecture full-stack avec séparation frontend/backend, persistance des données, authentification, sécurité des actions côté serveur, gestion des erreurs, responsive design et tests automatisés.
+
+## Documentation RNCP
+
+- [Contexte du projet](docs/01-contexte-rncp.md)
+- [Diagrammes de conception](docs/02-diagrammes.md)
+- [Documentation API](docs/03-api.md)
+- [Démo de soutenance](docs/04-demo-soutenance.md)
+- [Plan de mémoire](docs/05-plan-memoire.md)
+- [Checklist RNCP](docs/06-checklist-rncp.md)
