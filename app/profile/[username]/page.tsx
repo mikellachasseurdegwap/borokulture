@@ -9,6 +9,7 @@ import { PostCard } from "@/components/social/post-card";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { Button } from "@/components/ui/button";
 import api, { type ApiError } from "@/lib/api";
+import { getAvatarImageStyle } from "@/lib/avatar-style";
 import { type Post, type SocialUser } from "@/lib/social-types";
 
 type ProfileResponse = {
@@ -136,7 +137,7 @@ export default function PublicProfilePage() {
                   <div className="relative flex min-h-64 flex-col justify-end gap-6 sm:flex-row sm:items-end sm:justify-between">
                     <div className="flex items-center gap-4">
                       <div className="grid h-24 w-24 place-items-center overflow-hidden rounded-full border border-[#FF6B00]/35 bg-[#FF6B00]/14 text-2xl font-black text-[#FF8A1F]">
-                        {user.avatarUrl ? <img src={user.avatarUrl} alt={user.username} className="h-full w-full object-cover" /> : getInitials(user.displayName || user.username)}
+                        {user.avatarUrl ? <img src={user.avatarUrl} alt={user.username} className="h-full w-full object-cover" style={getAvatarImageStyle(user)} /> : getInitials(user.displayName || user.username)}
                       </div>
 
                       <div>

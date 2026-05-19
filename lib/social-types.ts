@@ -5,6 +5,9 @@ export type SocialUser = {
   displayName: string | null;
   bio: string | null;
   avatarUrl: string | null;
+  avatarPositionX: number;
+  avatarPositionY: number;
+  avatarScale: number;
   coverUrl: string | null;
   isVerified: boolean;
   createdAt: string;
@@ -24,6 +27,9 @@ export type Comment = {
     username: string;
     displayName: string | null;
     avatarUrl: string | null;
+    avatarPositionX?: number;
+    avatarPositionY?: number;
+    avatarScale?: number;
     isVerified: boolean;
   };
 };
@@ -48,6 +54,9 @@ export type Post = {
     username: string;
     displayName: string | null;
     avatarUrl: string | null;
+    avatarPositionX?: number;
+    avatarPositionY?: number;
+    avatarScale?: number;
     isVerified: boolean;
   };
   comments: Comment[];

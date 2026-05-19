@@ -27,6 +27,9 @@ const userSelect = {
   displayName: true,
   bio: true,
   avatarUrl: true,
+  avatarPositionX: true,
+  avatarPositionY: true,
+  avatarScale: true,
   coverUrl: true,
   isVerified: true,
   createdAt: true,
@@ -46,6 +49,9 @@ const normalizeUser = (user) => ({
   displayName: user.displayName,
   bio: user.bio,
   avatarUrl: user.avatarUrl,
+  avatarPositionX: user.avatarPositionX ?? 50,
+  avatarPositionY: user.avatarPositionY ?? 50,
+  avatarScale: user.avatarScale ?? 1,
   coverUrl: user.coverUrl,
   isVerified: user.isVerified,
   createdAt: user.createdAt,
@@ -102,6 +108,20 @@ const uploadedFileUrl = (file) => {
   }
 
   return `/uploads/profiles/${file.filename}`;
+};
+
+const parseAvatarCropValue = (value, fallback, min, max) => {
+  if (value === undefined || value === null || value === "") {
+    return fallback;
+  }
+
+  const number = Number(value);
+
+  if (!Number.isFinite(number)) {
+    throw new AppError("Invalid avatar crop value", 400);
+  }
+
+  return Math.min(Math.max(number, min), max);
 };
 
 export const register = async (req, res, next) => {
@@ -240,6 +260,9 @@ export const updateMe = async (req, res, next) => {
     const username = req.body.username?.trim();
     const displayName = req.body.displayName?.trim();
     const bio = req.body.bio?.trim();
+    const avatarPositionX = parseAvatarCropValue(req.body.avatarPositionX, undefined, 0, 100);
+    const avatarPositionY = parseAvatarCropValue(req.body.avatarPositionY, undefined, 0, 100);
+    const avatarScale = parseAvatarCropValue(req.body.avatarScale, undefined, 1, 2);
     const data = {};
 
     if (username !== undefined) {
@@ -283,6 +306,18 @@ export const updateMe = async (req, res, next) => {
 
     if (avatarUrl) {
       data.avatarUrl = avatarUrl;
+    }
+
+    if (avatarPositionX !== undefined) {
+      data.avatarPositionX = avatarPositionX;
+    }
+
+    if (avatarPositionY !== undefined) {
+      data.avatarPositionY = avatarPositionY;
+    }
+
+    if (avatarScale !== undefined) {
+      data.avatarScale = avatarScale;
     }
 
     if (coverUrl) {

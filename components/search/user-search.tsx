@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, User, Loader2, MapPin, Calendar, Sparkles } from "lucide-react";
 import api, { type ApiError } from "@/lib/api";
+import { getAvatarImageStyle } from "@/lib/avatar-style";
 import { isAuthenticated } from "@/lib/auth";
 
 type SearchUser = {
@@ -13,6 +14,9 @@ type SearchUser = {
   displayName?: string | null;
   bio?: string | null;
   avatarUrl?: string | null;
+  avatarPositionX?: number;
+  avatarPositionY?: number;
+  avatarScale?: number;
   isVerified: boolean;
   createdAt: string;
 };
@@ -240,7 +244,7 @@ export function UserSearch({ className = "" }: UserSearchProps) {
                       {/* Avatar */}
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#FF6B00]/30 bg-[#FF6B00]/12 text-xs font-black text-[#FF8A1F] shadow-[0_0_16px_rgba(255,107,0,0.1)] group-hover:border-[#FF6B00]/50 group-hover:shadow-[0_0_24px_rgba(255,107,0,0.2)] transition-all">
                         {user.avatarUrl ? (
-                          <img src={user.avatarUrl} alt={user.username} className="h-10 w-10 rounded-full object-cover" />
+                          <img src={user.avatarUrl} alt={user.username} className="h-10 w-10 rounded-full object-cover" style={getAvatarImageStyle(user)} />
                         ) : (
                           getInitials(user.displayName || user.username)
                         )}
