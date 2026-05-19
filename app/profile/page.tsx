@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type ChangeEvent, type FormEvent, useEffect, useMemo, useState } from "react";
+import { type ChangeEvent, type FormEvent, type PointerEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   CalendarDays,
@@ -12,6 +12,10 @@ import {
   ImagePlus,
   Loader2,
   Menu,
+  Minus,
+  Move,
+  Plus,
+  RotateCcw,
   Settings,
   Share2,
   Sparkles,
@@ -47,6 +51,10 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 }
 };
 
+const clamp = (value: number, min: number, max: number) => {
+  return Math.min(Math.max(value, min), max);
+};
+
 export default function ProfilePage() {
   const [user, setUser] = useState<SocialUser | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -66,6 +74,14 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [editorError, setEditorError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const avatarFrameRef = useRef<HTMLDivElement>(null);
+  const avatarDragRef = useRef({
+    isDragging: false,
+    startX: 0,
+    startY: 0,
+    startPositionX: 50,
+    startPositionY: 50
+  });
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -192,6 +208,60 @@ export default function ProfilePage() {
     }
 
     setCoverFile(file);
+  };
+
+  const updateAvatarScale = (delta: number) => {
+    setDraftAvatarScale((value) => clamp(Number((value + delta).toFixed(2)), 1, 2));
+  };
+
+  const resetAvatarCrop = () => {
+    setDraftAvatarPositionX(50);
+    setDraftAvatarPositionY(50);
+    setDraftAvatarScale(1);
+  };
+
+  const startAvatarDrag = (event: PointerEvent<HTMLDivElement>) => {
+    if (!avatarPreviewSrc || !avatarFrameRef.current) {
+      return;
+    }
+
+    event.currentTarget.setPointerCapture(event.pointerId);
+    avatarDragRef.current = {
+      isDragging: true,
+      startX: event.clientX,
+      startY: event.clientY,
+      startPositionX: draftAvatarPositionX,
+      startPositionY: draftAvatarPositionY
+    };
+  };
+
+  const moveAvatar = (event: PointerEvent<HTMLDivElement>) => {
+    const frame = avatarFrameRef.current;
+
+    if (!avatarDragRef.current.isDragging || !frame) {
+      return;
+    }
+
+    const bounds = frame.getBoundingClientRect();
+    const deltaX = ((event.clientX - avatarDragRef.current.startX) / bounds.width) * 100;
+    const deltaY = ((event.clientY - avatarDragRef.current.startY) / bounds.height) * 100;
+    const sensitivity = 1 / draftAvatarScale;
+
+    setDraftAvatarPositionX(clamp(avatarDragRef.current.startPositionX - deltaX * sensitivity, 0, 100));
+    setDraftAvatarPositionY(clamp(avatarDragRef.current.startPositionY - deltaY * sensitivity, 0, 100));
+  };
+
+  const stopAvatarDrag = (event: PointerEvent<HTMLDivElement>) => {
+    avatarDragRef.current.isDragging = false;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const handleAvatarWheel = (event: WheelEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    updateAvatarScale(event.deltaY < 0 ? 0.05 : -0.05);
   };
 
   const handleSaveProfile = async (event: FormEvent<HTMLFormElement>) => {
@@ -461,21 +531,42 @@ export default function ProfilePage() {
               {avatarPreviewSrc ? (
                 <div className="mt-6 rounded-[26px] border border-white/[0.08] bg-black/24 p-5">
                   <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-                    <div className="grid h-32 w-32 shrink-0 place-items-center overflow-hidden rounded-full border-4 border-[#FF6B00] bg-[#181818] text-3xl font-black text-white shadow-[0_0_34px_rgba(255,107,0,0.22)]">
+                    <div
+                      ref={avatarFrameRef}
+                      onPointerDown={startAvatarDrag}
+                      onPointerMove={moveAvatar}
+                      onPointerUp={stopAvatarDrag}
+                      onPointerCancel={stopAvatarDrag}
+                      onLostPointerCapture={stopAvatarDrag}
+                      onWheel={handleAvatarWheel}
+                      className="group relative grid h-40 w-40 shrink-0 cursor-grab touch-none select-none place-items-center overflow-hidden rounded-full border-4 border-[#FF6B00] bg-[#181818] text-3xl font-black text-white shadow-[0_0_34px_rgba(255,107,0,0.22)] active:cursor-grabbing"
+                      aria-label="Ajuster la photo de profil"
+                      role="img"
+                    >
                       <img src={avatarPreviewSrc} alt="Apercu avatar" className="h-full w-full object-cover" style={getAvatarImageStyle(avatarPreviewCrop)} />
+                      <div className="pointer-events-none absolute inset-0 grid place-items-center rounded-full bg-black/0 transition group-hover:bg-black/22">
+                        <Move className="h-8 w-8 text-white/0 transition group-hover:text-white/80" />
+                      </div>
                     </div>
-                    <div className="min-w-0 flex-1 space-y-4">
-                      <div>
-                        <div className="mb-2 flex justify-between text-xs font-bold uppercase tracking-[0.14em] text-[#B3B3B3]"><span>Horizontal</span><span>{Math.round(draftAvatarPositionX)}%</span></div>
-                        <input type="range" min="0" max="100" value={draftAvatarPositionX} onChange={(event) => setDraftAvatarPositionX(Number(event.target.value))} className="w-full accent-[#FF6B00]" />
-                      </div>
-                      <div>
-                        <div className="mb-2 flex justify-between text-xs font-bold uppercase tracking-[0.14em] text-[#B3B3B3]"><span>Vertical</span><span>{Math.round(draftAvatarPositionY)}%</span></div>
-                        <input type="range" min="0" max="100" value={draftAvatarPositionY} onChange={(event) => setDraftAvatarPositionY(Number(event.target.value))} className="w-full accent-[#FF6B00]" />
-                      </div>
-                      <div>
-                        <div className="mb-2 flex justify-between text-xs font-bold uppercase tracking-[0.14em] text-[#B3B3B3]"><span>Zoom</span><span>{draftAvatarScale.toFixed(1)}x</span></div>
-                        <input type="range" min="1" max="2" step="0.05" value={draftAvatarScale} onChange={(event) => setDraftAvatarScale(Number(event.target.value))} className="w-full accent-[#FF6B00]" />
+                    <div className="min-w-0 flex-1">
+                      <div className="rounded-3xl border border-white/[0.08] bg-white/[0.04] p-4">
+                        <div className="flex items-center gap-2 text-sm font-black text-white">
+                          <Move className="h-4 w-4 text-[#FF6B00]" />
+                          Glissez la photo directement dans le rond
+                        </div>
+                        <p className="mt-2 text-sm leading-6 text-[#B3B3B3]">Déplacez l'image avec la souris ou le doigt. Utilisez le zoom pour rapprocher ou élargir le cadrage.</p>
+                        <div className="mt-4 flex flex-wrap items-center gap-2">
+                          <Button type="button" variant="secondary" size="sm" onClick={() => updateAvatarScale(-0.1)} disabled={draftAvatarScale <= 1}>
+                            <Minus className="h-4 w-4" /> Zoom
+                          </Button>
+                          <Button type="button" variant="secondary" size="sm" onClick={() => updateAvatarScale(0.1)} disabled={draftAvatarScale >= 2}>
+                            <Plus className="h-4 w-4" /> Zoom
+                          </Button>
+                          <Button type="button" variant="ghost" size="sm" onClick={resetAvatarCrop}>
+                            <RotateCcw className="h-4 w-4" /> Recentrer
+                          </Button>
+                          <span className="ml-auto rounded-full border border-white/[0.08] bg-black/24 px-3 py-2 text-xs font-black text-[#B3B3B3]">{draftAvatarScale.toFixed(1)}x</span>
+                        </div>
                       </div>
                     </div>
                   </div>
