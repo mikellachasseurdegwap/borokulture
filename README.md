@@ -27,7 +27,6 @@ BORO KULTURE est une application de réseau social premium orientée créateurs.
 - Upload d'images `jpg`, `png`, `webp` avec limite de taille
 - Feed social responsive
 - Création de publications
-- Upload d'images dans les publications
 - Modification et suppression de ses propres publications
 - Likes persistés avec protection contre les doublons
 - Commentaires persistés

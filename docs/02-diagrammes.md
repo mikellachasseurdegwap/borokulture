@@ -40,7 +40,6 @@ erDiagram
     User ||--o{ Comment : commente
     User ||--o{ Follow : suit
     User ||--o{ Follow : est_suivi
-    Post ||--o{ PostMedia : contient
     Post ||--o{ Like : recoit
     Post ||--o{ Comment : contient
 
@@ -64,16 +63,6 @@ erDiagram
         string userId FK
         datetime createdAt
         datetime updatedAt
-    }
-
-    PostMedia {
-        string id PK
-        string url
-        string mimeType
-        int size
-        int order
-        string postId FK
-        datetime createdAt
     }
 
     Like {
@@ -128,15 +117,6 @@ classDiagram
       +DateTime createdAt
     }
 
-    class PostMedia {
-      +String id
-      +String url
-      +String mimeType
-      +Number size
-      +Number order
-      +DateTime createdAt
-    }
-
     class Comment {
       +String id
       +String content
@@ -153,7 +133,6 @@ classDiagram
     User "1" --> "*" Like : ajoute
     User "1" --> "*" Comment : ecrit
     User "1" --> "*" Follow : suit
-    Post "1" --> "*" PostMedia : contient
     Post "1" --> "*" Like : recoit
     Post "1" --> "*" Comment : contient
 ```

@@ -28,21 +28,11 @@ export type Comment = {
   };
 };
 
-export type PostMedia = {
-  id: string;
-  url: string;
-  mimeType: string;
-  size: number;
-  order: number;
-  createdAt: string;
-};
-
 export type Post = {
   id: string;
   content: string;
   createdAt: string;
   updatedAt: string;
-  media: PostMedia[];
   user: {
     id: string;
     username: string;

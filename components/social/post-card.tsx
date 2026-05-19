@@ -80,8 +80,6 @@ export function PostCard({ post, currentUserId, onPostUpdated, onPostDeleted, on
   const [error, setError] = useState<string | null>(null);
 
   const displayName = post.user.displayName || post.user.username;
-  const hasTextContent = editContent.trim().length > 0;
-  const mediaItems = post.media || [];
 
   const toggleLike = async () => {
     if (isBusy) {
@@ -224,7 +222,6 @@ export function PostCard({ post, currentUserId, onPostUpdated, onPostDeleted, on
         </Button>
       </header>
 
-      {(isEditing || hasTextContent) ? (
       <div className="mt-5 rounded-[24px] border border-white/[0.06] bg-black/20 p-5">
         {isEditing ? (
           <div className="space-y-3">
@@ -246,26 +243,6 @@ export function PostCard({ post, currentUserId, onPostUpdated, onPostDeleted, on
           <p className="whitespace-pre-wrap text-base leading-7 text-white/92">{editContent}</p>
         )}
       </div>
-      ) : null}
-
-      {mediaItems.length > 0 ? (
-        <div className={(isEditing || hasTextContent ? "mt-4 " : "mt-5 ") + "grid gap-3 " + (mediaItems.length > 1 ? "grid-cols-2" : "grid-cols-1")}>
-          {mediaItems.map((media, index) => (
-            <motion.figure
-              key={media.id}
-              whileHover={{ scale: 1.01 }}
-              className={(mediaItems.length === 1 ? "max-h-[620px] " : "aspect-square ") + "group overflow-hidden rounded-[26px] border border-white/[0.08] bg-black/28"}
-            >
-              <img
-                src={media.url}
-                alt={`Media ${index + 1} de la publication`}
-                className={(mediaItems.length === 1 ? "max-h-[620px] w-full " : "h-full w-full ") + "object-cover transition duration-500 group-hover:scale-[1.035]"}
-                loading="lazy"
-              />
-            </motion.figure>
-          ))}
-        </div>
-      ) : null}
 
       {error ? <p className="mt-3 text-sm font-semibold text-red-200">{error}</p> : null}
 

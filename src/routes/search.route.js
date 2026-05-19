@@ -28,17 +28,6 @@ const postSelect = (viewerId) => ({
   content: true,
   createdAt: true,
   updatedAt: true,
-  media: {
-    orderBy: { order: "asc" },
-    select: {
-      id: true,
-      url: true,
-      mimeType: true,
-      size: true,
-      order: true,
-      createdAt: true
-    }
-  },
   user: {
     select: {
       id: true,
@@ -100,7 +89,6 @@ const normalizePost = (post, viewerId) => ({
   content: post.content,
   createdAt: post.createdAt,
   updatedAt: post.updatedAt,
-  media: post.media,
   user: post.user,
   comments: post.comments,
   likeCount: post._count.likes,

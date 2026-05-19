@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type ChangeEvent, type FormEvent, useEffect, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Home,
@@ -44,8 +44,6 @@ export default function FeedPage() {
   const [user, setUser] = useState<SocialUser | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [content, setContent] = useState("");
-  const [mediaFiles, setMediaFiles] = useState<File[]>([]);
-  const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isPublishing, setIsPublishing] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -81,12 +79,6 @@ export default function FeedPage() {
     loadFeed();
   }, []);
 
-  useEffect(() => {
-    return () => {
-      mediaPreviews.forEach((preview) => URL.revokeObjectURL(preview));
-    };
-  }, [mediaPreviews]);
-
   const ownPostsCount = useMemo(() => {
     if (!user) {
       return 0;
@@ -100,71 +92,25 @@ export default function FeedPage() {
     window.setTimeout(() => setToast(null), 2200);
   };
 
-  const validateMediaFiles = (files: File[]) => {
-    if (files.length > 4) {
-      return "Vous pouvez ajouter 4 images maximum";
-    }
-
-    const invalidFile = files.find((file) => !["image/jpeg", "image/png", "image/webp"].includes(file.type));
-    if (invalidFile) {
-      return "Les images doivent etre au format jpg, png ou webp";
-    }
-
-    const oversizedFile = files.find((file) => file.size > 5 * 1024 * 1024);
-    if (oversizedFile) {
-      return "Chaque image doit faire 5 Mo maximum";
-    }
-
-    return null;
-  };
-
-  const handleMediaChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    const validationError = validateMediaFiles(files);
-
-    if (validationError) {
-      setComposerError(validationError);
-      event.target.value = "";
-      return;
-    }
-
-    mediaPreviews.forEach((preview) => URL.revokeObjectURL(preview));
-    setMediaFiles(files);
-    setMediaPreviews(files.map((file) => URL.createObjectURL(file)));
-    setComposerError(null);
-  };
-
-  const clearMedia = () => {
-    mediaPreviews.forEach((preview) => URL.revokeObjectURL(preview));
-    setMediaFiles([]);
-    setMediaPreviews([]);
-  };
-
   const handlePublish = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const cleanContent = content.trim();
-    if (!cleanContent && mediaFiles.length === 0) {
-      setComposerError("Ajoutez un texte ou une image");
+    if (!cleanContent) {
+      setComposerError("Le contenu de la publication est requis");
       return;
     }
 
     try {
       setIsPublishing(true);
       setComposerError(null);
-      const formData = new FormData();
-      formData.append("content", cleanContent);
-      mediaFiles.forEach((file) => {
-        formData.append("media", file);
-      });
 
-      const { data } = await api.post<PostResponse>("/posts", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+      const { data } = await api.post<PostResponse>("/posts", {
+        content: cleanContent
       });
 
       setPosts((currentPosts) => [data.post, ...currentPosts]);
       setContent("");
-      clearMedia();
       showToast("Publication creee");
     } catch (requestError) {
       const apiError = requestError as ApiError;
@@ -273,7 +219,7 @@ export default function FeedPage() {
                 </div>
               </div>
 
-              <form onSubmit={handlePublish} className="p-4 sm:p-5" encType="multipart/form-data">
+              <form onSubmit={handlePublish} className="p-4 sm:p-5">
                 <div className="flex gap-4">
                   <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full border border-white/[0.08] bg-[#FF6B00]/14 text-sm font-black text-[#FF6B00]">
                     {user?.avatarUrl ? <img src={user.avatarUrl} alt={user.username} className="h-full w-full object-cover" /> : getInitials(user?.displayName || user?.username)}
@@ -292,38 +238,15 @@ export default function FeedPage() {
                       className="w-full resize-none rounded-[24px] border border-white/[0.08] bg-black/24 px-5 py-4 text-base leading-7 text-white outline-none transition placeholder:text-[#9CA3AF] focus:border-[#FF6B00]/70 focus:bg-black/32 focus:shadow-[0_0_0_4px_rgba(255,107,0,0.10)]"
                       disabled={isPublishing}
                     />
-                    {mediaPreviews.length > 0 ? (
-                      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                        {mediaPreviews.map((preview, index) => (
-                          <div key={preview} className="group relative aspect-[4/3] overflow-hidden rounded-[24px] border border-white/[0.08] bg-black/30">
-                            <img src={preview} alt={`Apercu ${index + 1}`} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
-                          </div>
-                        ))}
-                      </div>
-                    ) : null}
                     {composerError ? <p className="mt-3 text-sm font-semibold text-red-200">{composerError}</p> : null}
                     <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-2 text-[#9CA3AF]">
-                        <input
-                          id="post-media-upload"
-                          type="file"
-                          accept="image/jpeg,image/png,image/webp"
-                          multiple
-                          onChange={handleMediaChange}
-                          className="sr-only"
-                          disabled={isPublishing}
-                        />
-                        <label htmlFor="post-media-upload" className="cursor-pointer rounded-full border border-white/[0.08] bg-white/[0.04] p-2 transition hover:border-[#FF6B00]/45 hover:bg-[#FF6B00]/13 hover:text-[#FF8A1F]" title="Ajouter des images">
+                        <button type="button" className="rounded-full border border-white/[0.08] bg-white/[0.04] p-2 opacity-55" disabled title="Le backend ne stocke pas encore les medias">
                           <ImagePlus className="h-4 w-4" />
-                        </label>
-                        <span className="text-xs font-semibold">{mediaFiles.length > 0 ? `${mediaFiles.length} image${mediaFiles.length > 1 ? "s" : ""} selectionnee${mediaFiles.length > 1 ? "s" : ""}` : "JPG, PNG ou WEBP. 5 Mo maximum."}</span>
-                        {mediaFiles.length > 0 ? (
-                          <button type="button" onClick={clearMedia} className="rounded-full p-2 text-[#9CA3AF] transition hover:bg-red-500/10 hover:text-red-300" aria-label="Retirer les images">
-                            <X className="h-4 w-4" />
-                          </button>
-                        ) : null}
+                        </button>
+                        <span className="text-xs font-semibold">Les medias de posts seront ajoutes quand la table media existera.</span>
                       </div>
-                      <Button type="submit" disabled={isPublishing || (!content.trim() && mediaFiles.length === 0)} className="shadow-[0_0_34px_rgba(255,107,0,0.26)]">
+                      <Button type="submit" disabled={isPublishing} className="shadow-[0_0_34px_rgba(255,107,0,0.26)]">
                         {isPublishing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                         Publier
                       </Button>

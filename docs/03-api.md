@@ -25,25 +25,9 @@ La taille maximum est de 2 Mo par image.
 | Méthode | Route | Protection | Description |
 |---|---|---|---|
 | GET | `/posts` | JWT | Lister les publications |
-| POST | `/posts` | JWT | Créer une publication avec texte et/ou images |
+| POST | `/posts` | JWT | Créer une publication |
 | PATCH | `/posts/:postId` | JWT | Modifier sa publication |
 | DELETE | `/posts/:postId` | JWT | Supprimer sa publication |
-
-La création d'une publication accepte :
-
-- `content` : texte de la publication.
-- `media` : images optionnelles en `multipart/form-data`.
-
-Formats acceptés pour les images de posts :
-
-- `jpg`
-- `png`
-- `webp`
-
-Limites :
-
-- 4 images maximum par publication.
-- 5 Mo maximum par image.
 
 Règles de sécurité :
 
