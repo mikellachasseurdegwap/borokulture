@@ -21,6 +21,7 @@ import { PostCard } from "@/components/social/post-card";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { Button } from "@/components/ui/button";
 import api, { type ApiError } from "@/lib/api";
+import { getAvatarImageStyle } from "@/lib/avatar-style";
 import { isAuthenticated } from "@/lib/auth";
 import { type MeResponse, type Post, type PostResponse, type PostsResponse, type SocialUser } from "@/lib/social-types";
 
@@ -276,7 +277,7 @@ export default function FeedPage() {
               <form onSubmit={handlePublish} className="p-4 sm:p-5" encType="multipart/form-data">
                 <div className="flex gap-4">
                   <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full border border-white/[0.08] bg-[#FF6B00]/14 text-sm font-black text-[#FF6B00]">
-                    {user?.avatarUrl ? <img src={user.avatarUrl} alt={user.username} className="h-full w-full object-cover" /> : getInitials(user?.displayName || user?.username)}
+                    {user?.avatarUrl ? <img src={user.avatarUrl} alt={user.username} className="h-full w-full object-cover" style={getAvatarImageStyle(user)} /> : getInitials(user?.displayName || user?.username)}
                   </div>
                   <div className="min-w-0 flex-1">
                     <textarea

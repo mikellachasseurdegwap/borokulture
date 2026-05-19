@@ -8,34 +8,37 @@ datasource db {
 }
 
 model User {
-  id          String    @id @default(uuid())
-  email       String    @unique
-  username    String    @unique
-  displayName String?
-  bio         String?
-  avatarUrl   String?
-  coverUrl    String?
-  isVerified  Boolean   @default(false)
-  password    String
-  posts       Post[]
-  likes       Like[]
-  comments    Comment[]
-  followers   Follow[]  @relation("following")
-  following   Follow[]  @relation("follower")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id              String    @id @default(uuid())
+  email           String    @unique
+  username        String    @unique
+  displayName     String?
+  bio             String?
+  avatarUrl       String?
+  avatarPositionX Float     @default(50)
+  avatarPositionY Float     @default(50)
+  avatarScale     Float     @default(1)
+  coverUrl        String?
+  isVerified      Boolean   @default(false)
+  password        String
+  posts           Post[]
+  likes           Like[]
+  comments        Comment[]
+  followers       Follow[]  @relation("following")
+  following       Follow[]  @relation("follower")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 model Post {
-  id        String    @id @default(uuid())
+  id        String      @id @default(uuid())
   content   String
   userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   media     PostMedia[]
   likes     Like[]
   comments  Comment[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
 
   @@index([userId])
   @@index([createdAt])

@@ -12,6 +12,9 @@ const commentSelect = {
       username: true,
       displayName: true,
       avatarUrl: true,
+      avatarPositionX: true,
+      avatarPositionY: true,
+      avatarScale: true,
       isVerified: true
     }
   }
@@ -41,6 +44,9 @@ const postSelect = (viewerId) => ({
       username: true,
       displayName: true,
       avatarUrl: true,
+      avatarPositionX: true,
+      avatarPositionY: true,
+      avatarScale: true,
       isVerified: true
     }
   },

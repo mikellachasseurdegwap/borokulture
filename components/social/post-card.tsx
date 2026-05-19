@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import api, { type ApiError } from "@/lib/api";
+import { getAvatarImageStyle } from "@/lib/avatar-style";
 import { type Comment, type Post, type PostResponse } from "@/lib/social-types";
 
 type PostCardProps = {
@@ -59,7 +60,7 @@ function Avatar({ user, size = "md" }: { user: Post["user"] | Comment["user"]; s
   return (
     <div className={`${dimensions} grid shrink-0 place-items-center overflow-hidden rounded-full border border-[#FF6B00]/30 bg-[#FF6B00]/14 font-black text-[#FF8A1F] shadow-[0_0_24px_rgba(255,107,0,0.12)]`}>
       {user.avatarUrl ? (
-        <img src={user.avatarUrl} alt={user.username} className="h-full w-full object-cover" />
+        <img src={user.avatarUrl} alt={user.username} className="h-full w-full object-cover" style={getAvatarImageStyle(user)} />
       ) : (
         getInitials(user.displayName || user.username)
       )}

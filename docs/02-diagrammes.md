@@ -51,6 +51,9 @@ erDiagram
         string displayName
         string bio
         string avatarUrl
+        float avatarPositionX
+        float avatarPositionY
+        float avatarScale
         string coverUrl
         boolean isVerified
         string password
@@ -111,6 +114,9 @@ classDiagram
       +String displayName
       +String bio
       +String avatarUrl
+      +Number avatarPositionX
+      +Number avatarPositionY
+      +Number avatarScale
       +String coverUrl
       +Boolean isVerified
       +DateTime createdAt

@@ -11,6 +11,9 @@ const userSearchSelect = {
   displayName: true,
   bio: true,
   avatarUrl: true,
+  avatarPositionX: true,
+  avatarPositionY: true,
+  avatarScale: true,
   coverUrl: true,
   isVerified: true,
   createdAt: true,
@@ -60,6 +63,9 @@ const postSelect = (viewerId) => ({
           username: true,
           displayName: true,
           avatarUrl: true,
+          avatarPositionX: true,
+          avatarPositionY: true,
+          avatarScale: true,
           isVerified: true
         }
       }
@@ -85,6 +91,9 @@ const normalizeUser = (user, viewerId, follow) => ({
   displayName: user.displayName,
   bio: user.bio,
   avatarUrl: user.avatarUrl,
+  avatarPositionX: user.avatarPositionX ?? 50,
+  avatarPositionY: user.avatarPositionY ?? 50,
+  avatarScale: user.avatarScale ?? 1,
   coverUrl: user.coverUrl,
   isVerified: user.isVerified,
   createdAt: user.createdAt,

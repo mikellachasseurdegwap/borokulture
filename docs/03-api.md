@@ -15,10 +15,19 @@
 - `displayName`
 - `bio`
 - `avatar`
+- `avatarPositionX`
+- `avatarPositionY`
+- `avatarScale`
 - `cover`
 
 Les images acceptées sont : `jpg`, `png`, `webp`.
 La taille maximum est de 2 Mo par image.
+
+Les valeurs de recadrage avatar permettent d'ajuster l'image dans le cercle :
+
+- `avatarPositionX` : position horizontale de 0 à 100.
+- `avatarPositionY` : position verticale de 0 à 100.
+- `avatarScale` : zoom de 1 à 2.
 
 ## Publications
 

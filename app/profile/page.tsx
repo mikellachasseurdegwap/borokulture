@@ -23,6 +23,7 @@ import { PostCard } from "@/components/social/post-card";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { Button } from "@/components/ui/button";
 import api, { type ApiError } from "@/lib/api";
+import { getAvatarImageStyle } from "@/lib/avatar-style";
 import { isAuthenticated } from "@/lib/auth";
 import { type MeResponse, type Post, type PostsResponse, type SocialUser } from "@/lib/social-types";
 
@@ -57,6 +58,10 @@ export default function ProfilePage() {
   const [draftDisplayName, setDraftDisplayName] = useState("");
   const [draftBio, setDraftBio] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
+  const [draftAvatarPositionX, setDraftAvatarPositionX] = useState(50);
+  const [draftAvatarPositionY, setDraftAvatarPositionY] = useState(50);
+  const [draftAvatarScale, setDraftAvatarScale] = useState(1);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [editorError, setEditorError] = useState<string | null>(null);
@@ -81,6 +86,9 @@ export default function ProfilePage() {
         setDraftUsername(meData.user.username);
         setDraftDisplayName(meData.user.displayName || "");
         setDraftBio(meData.user.bio || "");
+        setDraftAvatarPositionX(meData.user.avatarPositionX ?? 50);
+        setDraftAvatarPositionY(meData.user.avatarPositionY ?? 50);
+        setDraftAvatarScale(meData.user.avatarScale ?? 1);
         setPosts(postsData.posts);
       } catch (requestError) {
         const apiError = requestError as ApiError;
@@ -93,6 +101,14 @@ export default function ProfilePage() {
     loadProfile();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (avatarPreviewUrl) {
+        URL.revokeObjectURL(avatarPreviewUrl);
+      }
+    };
+  }, [avatarPreviewUrl]);
+
   const userPosts = useMemo(() => {
     if (!user) {
       return [];
@@ -103,6 +119,12 @@ export default function ProfilePage() {
 
   const latestActivity = userPosts[0]?.createdAt ? formatDate(userPosts[0].createdAt) : null;
   const displayName = user?.displayName || user?.username || "Profil";
+  const avatarPreviewSrc = avatarPreviewUrl || user?.avatarUrl;
+  const avatarPreviewCrop = {
+    avatarPositionX: draftAvatarPositionX,
+    avatarPositionY: draftAvatarPositionY,
+    avatarScale: draftAvatarScale
+  };
 
   const stats = [
     { label: "Abonnes", value: String(user?.followerCount ?? 0) },
@@ -153,7 +175,19 @@ export default function ProfilePage() {
 
     setEditorError(null);
     if (type === "avatar") {
+      if (avatarPreviewUrl) {
+        URL.revokeObjectURL(avatarPreviewUrl);
+      }
+
       setAvatarFile(file);
+      setAvatarPreviewUrl(file ? URL.createObjectURL(file) : null);
+
+      if (file) {
+        setDraftAvatarPositionX(50);
+        setDraftAvatarPositionY(50);
+        setDraftAvatarScale(1);
+      }
+
       return;
     }
 
@@ -183,6 +217,9 @@ export default function ProfilePage() {
       formData.append("username", username);
       formData.append("displayName", draftDisplayName.trim());
       formData.append("bio", draftBio.trim());
+      formData.append("avatarPositionX", String(draftAvatarPositionX));
+      formData.append("avatarPositionY", String(draftAvatarPositionY));
+      formData.append("avatarScale", String(draftAvatarScale));
 
       if (avatarFile) {
         formData.append("avatar", avatarFile);
@@ -199,7 +236,14 @@ export default function ProfilePage() {
       setDraftUsername(data.user.username);
       setDraftDisplayName(data.user.displayName || "");
       setDraftBio(data.user.bio || "");
+      setDraftAvatarPositionX(data.user.avatarPositionX ?? 50);
+      setDraftAvatarPositionY(data.user.avatarPositionY ?? 50);
+      setDraftAvatarScale(data.user.avatarScale ?? 1);
       setAvatarFile(null);
+      if (avatarPreviewUrl) {
+        URL.revokeObjectURL(avatarPreviewUrl);
+      }
+      setAvatarPreviewUrl(null);
       setCoverFile(null);
       setIsEditorOpen(false);
       showToast("Profil mis a jour");
@@ -316,7 +360,7 @@ export default function ProfilePage() {
                   <div className="relative flex min-h-[460px] flex-col justify-end p-6 sm:p-8 lg:p-10">
                     <div className="flex flex-col gap-6 md:flex-row md:items-end">
                       <motion.div whileHover={{ scale: 1.03 }} className="grid h-32 w-32 shrink-0 place-items-center overflow-hidden rounded-full border-4 border-[#FF6B00] bg-[#181818] text-4xl font-black text-white shadow-[0_0_45px_rgba(255,107,0,0.28)] sm:h-40 sm:w-40 sm:text-5xl">
-                        {user.avatarUrl ? <img src={user.avatarUrl} alt={user.username} className="h-full w-full object-cover" /> : getInitials(user.displayName || user.username)}
+                        {user.avatarUrl ? <img src={user.avatarUrl} alt={user.username} className="h-full w-full object-cover" style={getAvatarImageStyle(user)} /> : getInitials(user.displayName || user.username)}
                       </motion.div>
 
                       <div className="min-w-0 max-w-4xl">
@@ -413,6 +457,30 @@ export default function ProfilePage() {
                 <div><label className="block text-sm font-bold text-[#B3B3B3]" htmlFor="edit-avatar">Photo de profil</label><input id="edit-avatar" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => handleImageChange(event, "avatar")} className="mt-2 w-full rounded-2xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-[#B3B3B3] file:mr-3 file:rounded-full file:border-0 file:bg-[#FF6B00] file:px-4 file:py-2 file:font-bold file:text-black" /></div>
                 <div><label className="block text-sm font-bold text-[#B3B3B3]" htmlFor="edit-cover">Photo de couverture</label><input id="edit-cover" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => handleImageChange(event, "cover")} className="mt-2 w-full rounded-2xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-[#B3B3B3] file:mr-3 file:rounded-full file:border-0 file:bg-[#FF6B00] file:px-4 file:py-2 file:font-bold file:text-black" /></div>
               </div>
+
+              {avatarPreviewSrc ? (
+                <div className="mt-6 rounded-[26px] border border-white/[0.08] bg-black/24 p-5">
+                  <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+                    <div className="grid h-32 w-32 shrink-0 place-items-center overflow-hidden rounded-full border-4 border-[#FF6B00] bg-[#181818] text-3xl font-black text-white shadow-[0_0_34px_rgba(255,107,0,0.22)]">
+                      <img src={avatarPreviewSrc} alt="Apercu avatar" className="h-full w-full object-cover" style={getAvatarImageStyle(avatarPreviewCrop)} />
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-4">
+                      <div>
+                        <div className="mb-2 flex justify-between text-xs font-bold uppercase tracking-[0.14em] text-[#B3B3B3]"><span>Horizontal</span><span>{Math.round(draftAvatarPositionX)}%</span></div>
+                        <input type="range" min="0" max="100" value={draftAvatarPositionX} onChange={(event) => setDraftAvatarPositionX(Number(event.target.value))} className="w-full accent-[#FF6B00]" />
+                      </div>
+                      <div>
+                        <div className="mb-2 flex justify-between text-xs font-bold uppercase tracking-[0.14em] text-[#B3B3B3]"><span>Vertical</span><span>{Math.round(draftAvatarPositionY)}%</span></div>
+                        <input type="range" min="0" max="100" value={draftAvatarPositionY} onChange={(event) => setDraftAvatarPositionY(Number(event.target.value))} className="w-full accent-[#FF6B00]" />
+                      </div>
+                      <div>
+                        <div className="mb-2 flex justify-between text-xs font-bold uppercase tracking-[0.14em] text-[#B3B3B3]"><span>Zoom</span><span>{draftAvatarScale.toFixed(1)}x</span></div>
+                        <input type="range" min="1" max="2" step="0.05" value={draftAvatarScale} onChange={(event) => setDraftAvatarScale(Number(event.target.value))} className="w-full accent-[#FF6B00]" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
 
               <div className="mt-6 flex justify-end gap-3"><Button type="button" variant="secondary" onClick={() => setIsEditorOpen(false)}>Annuler</Button><Button type="submit" disabled={isSaving}>{isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}{isSaving ? "Enregistrement..." : "Enregistrer"}</Button></div>
             </motion.form>
