@@ -10,11 +10,12 @@ import {
   updatePost
 } from "../controllers/posts.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
+import { postMediaUpload } from "../middleware/upload.middleware.js";
 
 const router = Router();
 
 router.get("/", authMiddleware, getPosts);
-router.post("/", authMiddleware, createPost);
+router.post("/", authMiddleware, postMediaUpload, createPost);
 router.patch("/:postId", authMiddleware, updatePost);
 router.delete("/:postId", authMiddleware, deletePost);
 router.post("/:postId/likes", authMiddleware, likePost);

@@ -22,6 +22,19 @@ const postSelect = (viewerId) => ({
   content: true,
   createdAt: true,
   updatedAt: true,
+  media: {
+    orderBy: {
+      order: "asc"
+    },
+    select: {
+      id: true,
+      url: true,
+      mimeType: true,
+      size: true,
+      order: true,
+      createdAt: true
+    }
+  },
   user: {
     select: {
       id: true,
@@ -60,6 +73,7 @@ const normalizePost = (post, viewerId) => ({
   content: post.content,
   createdAt: post.createdAt,
   updatedAt: post.updatedAt,
+  media: post.media,
   user: post.user,
   comments: post.comments,
   likeCount: post._count.likes,
@@ -93,13 +107,14 @@ export const createPost = async (req, res, next) => {
   try {
     const userId = req.userId;
     const content = req.body.content?.trim();
+    const files = Array.isArray(req.files) ? req.files : [];
 
     if (!userId) {
       throw new AppError("Authentication required", 401);
     }
 
-    if (!content) {
-      throw new AppError("Content is required", 400);
+    if (!content && files.length === 0) {
+      throw new AppError("Content or image is required", 400);
     }
 
     const user = await prisma.user.findUnique({
@@ -113,8 +128,18 @@ export const createPost = async (req, res, next) => {
 
     const post = await prisma.post.create({
       data: {
-        content,
-        userId
+        content: content || "",
+        userId,
+        media: files.length
+          ? {
+              create: files.map((file, index) => ({
+                url: `/uploads/posts/${file.filename}`,
+                mimeType: file.mimetype,
+                size: file.size,
+                order: index
+              }))
+            }
+          : undefined
       },
       select: postSelect(userId)
     });

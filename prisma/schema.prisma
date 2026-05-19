@@ -31,12 +31,27 @@ model Post {
   content   String
   userId    String
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  media     PostMedia[]
   likes     Like[]
   comments  Comment[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
 
   @@index([userId])
+  @@index([createdAt])
+}
+
+model PostMedia {
+  id        String   @id @default(uuid())
+  url       String
+  mimeType  String
+  size      Int
+  order     Int      @default(0)
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([postId])
   @@index([createdAt])
 }
 
