@@ -26,7 +26,7 @@ import { isAuthenticated } from "@/lib/auth";
 import { type MeResponse, type Post, type PostResponse, type PostsResponse, type SocialUser } from "@/lib/social-types";
 
 const navItems = [
-  { label: "Home", icon: Home, href: "/" },
+  { label: "boro", icon: Home, href: "/" },
   { label: "Feed", icon: Sparkles, href: "/feed", active: true },
   { label: "Profil", icon: User, href: "/profile" },
   { label: "Parametres", icon: Settings, href: "/profile" }
@@ -227,7 +227,7 @@ export default function FeedPage() {
             </Button>
 
             <div className="hidden items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.045] p-1 text-sm font-bold text-[#B7B7B7] shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-2xl md:flex">
-              <Link className="rounded-full px-4 py-2 transition hover:bg-white/[0.08] hover:text-white" href="/">Home</Link>
+              <Link className="rounded-full px-4 py-2 transition hover:bg-white/[0.08] hover:text-white" href="/">boro</Link>
               <Link className="rounded-full bg-[linear-gradient(90deg,#FF8A1F,#f0443e,#FF3D7E)] px-4 py-2 text-white shadow-[0_0_24px_rgba(255,107,0,0.28)]" href="/feed">Feed</Link>
               <Link className="rounded-full px-4 py-2 transition hover:bg-white/[0.08] hover:text-white" href="/profile">Profil</Link>
             </div>

@@ -1164,6 +1164,7 @@ textarea {
 
 .main:has(.auth-layout),
 .main:has(.premium-profile),
+.main:has(.public-profile-page),
 .main:has(.feed-page),
 .main:has(.boro-home) {
   width: 100%;

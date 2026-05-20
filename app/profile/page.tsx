@@ -32,7 +32,7 @@ import { isAuthenticated } from "@/lib/auth";
 import { type MeResponse, type Post, type PostsResponse, type SocialUser } from "@/lib/social-types";
 
 const navItems = [
-  { label: "Home", icon: Home, href: "/" },
+  { label: "boro", icon: Home, href: "/" },
   { label: "Feed", icon: Sparkles, href: "/feed" },
   { label: "Profil", icon: User, href: "/profile", active: true },
   { label: "Parametres", icon: Settings, href: "/profile", settings: true }
@@ -373,7 +373,7 @@ export default function ProfilePage() {
             <BrandLogo variant="full" className="w-32" />
 
             <div className="hidden items-center gap-6 text-sm font-semibold text-[#B3B3B3] md:flex">
-              <Link className="transition hover:text-white" href="/">Home</Link>
+              <Link className="transition hover:text-white" href="/">boro</Link>
               <Link className="transition hover:text-white hover:text-[#FF6B00]" href="/feed">Feed</Link>
               <Link className="text-white" href="/profile">Profil</Link>
               <button type="button" className="transition hover:text-white" onClick={() => setIsEditorOpen(true)}>Parametres</button>
