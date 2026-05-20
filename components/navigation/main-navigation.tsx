@@ -10,7 +10,7 @@ export function MainNavigation() {
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const isAuthPage = pathname === "/login" || pathname === "/register";
-  const isImmersivePage = pathname === "/" || pathname === "/profile" || pathname === "/feed";
+  const isImmersivePage = pathname === "/" || pathname === "/profile" || pathname.startsWith("/profile/") || pathname === "/feed";
 
   useEffect(() => {
     setIsLoggedIn(isAuthenticated());
@@ -26,7 +26,7 @@ export function MainNavigation() {
         <BrandLogo className="brand" />
 
         <nav className="nav" aria-label="Navigation principale">
-          <Link href="/">Accueil</Link>
+          <Link href="/">boro</Link>
           {isLoggedIn ? (
             <>
               <Link href="/feed">Feed</Link>
