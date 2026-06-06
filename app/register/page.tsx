@@ -1,10 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
+import { AuthPageRedirect } from "@/components/auth/auth-page-redirect";
 import { RegisterForm } from "@/components/auth/register-form";
 
 export default function RegisterPage() {
   return (
     <section className="auth-layout">
+      <AuthPageRedirect />
       <div className="auth-logo-panel" aria-hidden="true">
         <Image
           src="/assets/logofinal.png"
