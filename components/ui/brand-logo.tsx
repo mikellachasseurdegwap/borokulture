@@ -38,7 +38,7 @@ export function BrandLogo({ variant = "full", className = "", href = "/" }: Bran
 
   // variant === "full" (default)
   return (
-    <Link href={href} className={`relative w-32 h-10 ${className}`}>
+    <Link href={href} className={`relative h-12 w-40 ${className}`}>
       <Image
         src={logoSrc}
         alt="BORO KULTURE"
