@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type ChangeEvent, type FormEvent, type PointerEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -10,6 +11,7 @@ import {
   FileText,
   Home,
   ImagePlus,
+  LogOut,
   Loader2,
   Menu,
   Minus,
@@ -28,7 +30,7 @@ import { BrandLogo } from "@/components/ui/brand-logo";
 import { Button } from "@/components/ui/button";
 import api, { type ApiError } from "@/lib/api";
 import { getAvatarImageStyle } from "@/lib/avatar-style";
-import { isAuthenticated } from "@/lib/auth";
+import { isAuthenticated, removeToken } from "@/lib/auth";
 import { type MeResponse, type Post, type PostsResponse, type SocialUser } from "@/lib/social-types";
 
 const navItems = [
@@ -56,6 +58,7 @@ const clamp = (value: number, min: number, max: number) => {
 };
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [user, setUser] = useState<SocialUser | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -161,6 +164,12 @@ export default function ProfilePage() {
     } catch {
       showToast("Lien du profil pret a partager");
     }
+  };
+
+  const handleLogout = () => {
+    removeToken();
+    router.replace("/login");
+    router.refresh();
   };
 
   const validateImage = (file: File | null) => {
@@ -573,7 +582,16 @@ export default function ProfilePage() {
                 </div>
               ) : null}
 
-              <div className="mt-6 flex justify-end gap-3"><Button type="button" variant="secondary" onClick={() => setIsEditorOpen(false)}>Annuler</Button><Button type="submit" disabled={isSaving}>{isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}{isSaving ? "Enregistrement..." : "Enregistrer"}</Button></div>
+              <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <Button type="button" variant="ghost" onClick={handleLogout} className="justify-center text-red-200 hover:bg-red-500/10 hover:text-red-100">
+                  <LogOut className="h-4 w-4" />
+                  Déconnexion
+                </Button>
+                <div className="flex justify-end gap-3">
+                  <Button type="button" variant="secondary" onClick={() => setIsEditorOpen(false)}>Annuler</Button>
+                  <Button type="submit" disabled={isSaving}>{isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}{isSaving ? "Enregistrement..." : "Enregistrer"}</Button>
+                </div>
+              </div>
             </motion.form>
           </div>
         ) : null}
