@@ -34,7 +34,7 @@ export function LoginForm() {
       });
 
       setToken(data.token);
-      router.push("/profile");
+      router.push("/feed");
       router.refresh();
     } catch (requestError) {
       const apiError = requestError as ApiError;
