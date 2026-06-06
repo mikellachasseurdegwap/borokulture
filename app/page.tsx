@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import {
@@ -13,6 +14,7 @@ import {
   Users,
   Wand2
 } from "lucide-react";
+import { BrandLogo } from "@/components/ui/brand-logo";
 import { clearWelcomePending, hasWelcomePending, isAuthenticated } from "@/lib/auth";
 
 const reveal: Variants = {
@@ -319,17 +321,39 @@ function FinalSection({ isLoggedIn }: Pick<HomeState, "isLoggedIn">) {
 }
 
 export default function HomePage() {
+  const router = useRouter();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [homeState, setHomeState] = useState<HomeState>({
     isLoggedIn: false,
     isNewMember: false
   });
 
   useEffect(() => {
+    const loggedIn = isAuthenticated();
+
+    if (!loggedIn) {
+      router.replace("/login");
+      return;
+    }
+
     setHomeState({
-      isLoggedIn: isAuthenticated(),
+      isLoggedIn: true,
       isNewMember: hasWelcomePending()
     });
-  }, []);
+    setIsCheckingAuth(false);
+  }, [router]);
+
+  if (isCheckingAuth) {
+    return (
+      <main className="boro-home grid min-h-screen place-items-center">
+        <div className="bk-noise" aria-hidden="true" />
+        <div className="relative z-10 flex flex-col items-center gap-5 text-center">
+          <BrandLogo variant="full" className="w-36" />
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-[#FF6B00]">Connexion</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="boro-home">
