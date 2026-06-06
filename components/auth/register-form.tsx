@@ -3,7 +3,7 @@
 import { type FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import api, { type ApiError } from "@/lib/api";
-import { markWelcomePending, setToken } from "@/lib/auth";
+import { setToken } from "@/lib/auth";
 
 type RegisterResponse = {
   message: string;
@@ -41,8 +41,7 @@ export function RegisterForm() {
       });
 
       setToken(data.token);
-      markWelcomePending();
-      router.push("/");
+      router.push("/feed");
       router.refresh();
     } catch (requestError) {
       const apiError = requestError as Partial<ApiError>;
