@@ -107,7 +107,7 @@ export default function PublicProfilePage() {
   return (
     <AuthGuard>
       <div className="public-profile-page min-h-screen bg-[#050505] text-white">
-        <nav className="sticky top-0 z-40 border-b border-white/[0.08] bg-[#050505]/76 backdrop-blur-2xl">
+        <nav className="sticky top-0 z-40 bg-transparent">
           <div className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-4 sm:px-6 lg:px-8">
             <BrandLogo variant="full" className="w-32" />
             <div className="flex items-center gap-4 text-sm font-bold text-[#B7B7B7]">
