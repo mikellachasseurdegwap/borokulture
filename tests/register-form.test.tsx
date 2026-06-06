@@ -10,6 +10,7 @@ const apiMock = {
 };
 
 const setTokenMock = jest.fn();
+const markWelcomePendingMock = jest.fn();
 const routerMock = {
   push: jest.fn(),
   refresh: jest.fn()
@@ -25,6 +26,7 @@ jest.doMock("@/lib/api", () => ({
 }));
 
 jest.doMock("@/lib/auth", () => ({
+  markWelcomePending: markWelcomePendingMock,
   setToken: setTokenMock
 }));
 
@@ -78,6 +80,7 @@ describe("RegisterForm", () => {
     });
 
     expect(setTokenMock).toHaveBeenCalledWith("token-123");
-    expect(routerMock.push).toHaveBeenCalledWith("/profile");
+    expect(markWelcomePendingMock).toHaveBeenCalled();
+    expect(routerMock.push).toHaveBeenCalledWith("/welcome");
   });
 });

@@ -1,4 +1,5 @@
 const TOKEN_KEY = "boro_kulture_token";
+const WELCOME_PENDING_KEY = "boro_kulture_welcome_pending";
 
 type JwtPayload = {
   exp?: number;
@@ -64,12 +65,37 @@ export const setToken = (token: string): void => {
   window.localStorage.setItem(TOKEN_KEY, cleanToken);
 };
 
+export const markWelcomePending = (): void => {
+  if (!isBrowser()) {
+    return;
+  }
+
+  window.localStorage.setItem(WELCOME_PENDING_KEY, "true");
+};
+
+export const hasWelcomePending = (): boolean => {
+  if (!isBrowser()) {
+    return false;
+  }
+
+  return window.localStorage.getItem(WELCOME_PENDING_KEY) === "true";
+};
+
+export const clearWelcomePending = (): void => {
+  if (!isBrowser()) {
+    return;
+  }
+
+  window.localStorage.removeItem(WELCOME_PENDING_KEY);
+};
+
 export const removeToken = (): void => {
   if (!isBrowser()) {
     return;
   }
 
   window.localStorage.removeItem(TOKEN_KEY);
+  window.localStorage.removeItem(WELCOME_PENDING_KEY);
 };
 
 export const isAuthenticated = (): boolean => {

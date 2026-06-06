@@ -214,7 +214,7 @@ export default function FeedPage() {
       <div className="feed-page min-h-screen bg-[#050505] text-white selection:bg-[#FF6B00] selection:text-black">
         <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_18%_0%,rgba(255,107,0,0.16),transparent_30%),radial-gradient(circle_at_88%_12%,rgba(255,107,0,0.08),transparent_26%),linear-gradient(180deg,#121212_0%,#050505_42%,#050505_100%)]" />
 
-        <nav className="sticky top-0 z-40 border-b border-white/[0.08] bg-[#050505]/72 backdrop-blur-2xl">
+        <nav className="sticky top-0 z-40 bg-transparent">
           <div className="mx-auto flex h-16 max-w-[1480px] items-center justify-between px-4 sm:px-6 lg:px-8">
             <BrandLogo variant="full" className="w-32" />
 

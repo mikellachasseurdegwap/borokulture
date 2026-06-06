@@ -368,7 +368,7 @@ export default function ProfilePage() {
       <div className="premium-profile min-h-screen bg-[#0B0B0B] text-white selection:bg-[#FF6B00] selection:text-black">
         <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_20%_8%,rgba(255,107,0,0.18),transparent_28%),radial-gradient(circle_at_88%_10%,rgba(216,23,114,0.12),transparent_30%),linear-gradient(180deg,#121212_0%,#0B0B0B_42%,#080808_100%)]" />
 
-        <nav className="sticky top-0 z-40 border-b border-white/[0.08] bg-[#0B0B0B]/76 backdrop-blur-2xl">
+        <nav className="sticky top-0 z-40 bg-transparent">
           <div className="mx-auto flex h-16 max-w-[1380px] items-center justify-between px-4 sm:px-6 lg:px-8">
             <BrandLogo variant="full" className="w-32" />
 
