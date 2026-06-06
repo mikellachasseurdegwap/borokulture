@@ -42,7 +42,7 @@ export function RegisterForm() {
 
       setToken(data.token);
       markWelcomePending();
-      router.push("/welcome");
+      router.push("/");
       router.refresh();
     } catch (requestError) {
       const apiError = requestError as Partial<ApiError>;

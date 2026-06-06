@@ -81,6 +81,6 @@ describe("RegisterForm", () => {
 
     expect(setTokenMock).toHaveBeenCalledWith("token-123");
     expect(markWelcomePendingMock).toHaveBeenCalled();
-    expect(routerMock.push).toHaveBeenCalledWith("/welcome");
+    expect(routerMock.push).toHaveBeenCalledWith("/");
   });
 });
