@@ -205,8 +205,8 @@ export function PostCard({ post, currentUserId, onPostUpdated, onPostDeleted, on
       id={`post-${post.id}`}
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4 }}
-      className="mb-5 break-inside-avoid overflow-hidden rounded-[30px] border border-white/[0.08] bg-[#121212]/82 p-5 shadow-2xl shadow-black/24 backdrop-blur-2xl transition hover:border-white/[0.14] hover:shadow-[0_24px_70px_rgba(255,107,0,0.10)]"
+      whileHover={{ y: -2 }}
+      className="overflow-hidden rounded-[30px] border border-white/[0.08] bg-[#121212]/82 p-5 shadow-2xl shadow-black/24 backdrop-blur-2xl transition hover:border-white/[0.14] hover:shadow-[0_24px_70px_rgba(255,107,0,0.10)]"
     >
       <header className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-center gap-3">

@@ -215,10 +215,10 @@ export default function FeedPage() {
         <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_18%_0%,rgba(255,107,0,0.16),transparent_30%),radial-gradient(circle_at_88%_12%,rgba(255,107,0,0.08),transparent_26%),linear-gradient(180deg,#121212_0%,#050505_42%,#050505_100%)]" />
 
         <nav className="sticky top-0 z-40 bg-transparent">
-          <div className="mx-auto flex h-16 max-w-[1480px] items-center justify-between px-4 sm:px-6 lg:px-8">
-            <BrandLogo variant="full" className="w-32" />
+          <div className="mx-auto flex h-20 max-w-[1320px] items-center justify-between px-4 sm:px-6 lg:px-8">
+            <BrandLogo variant="full" className="h-14 w-44 sm:h-16 sm:w-52" />
 
-            <div className="hidden max-w-md flex-1 md:mx-8 md:block">
+            <div className="hidden max-w-lg flex-1 md:mx-8 md:block">
               <UserSearch className="w-full" />
             </div>
 
@@ -251,32 +251,32 @@ export default function FeedPage() {
           </div>
         ) : null}
 
-        <div className="relative z-10 mx-auto grid max-w-[1480px] grid-cols-1 gap-6 px-4 py-6 sm:px-6 lg:px-8 xl:grid-cols-[220px_minmax(0,1fr)]">
+        <div className="relative z-10 mx-auto grid max-w-[1320px] grid-cols-1 gap-6 px-4 py-5 sm:px-6 lg:px-8 xl:grid-cols-[220px_minmax(0,760px)] xl:justify-center">
           <aside className="hidden xl:block">
             <div className="sticky top-24">{sidebar}</div>
           </aside>
 
-          <main className="mx-auto w-full max-w-[980px] min-w-0 pb-24 xl:pb-0">
-            <motion.section initial="hidden" animate="visible" variants={fadeUp} transition={{ duration: 0.45 }} className="mb-6 overflow-hidden rounded-[34px] border border-white/[0.08] bg-[#121212]/78 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl">
-              <div className="border-b border-white/[0.08] bg-[radial-gradient(circle_at_22%_0%,rgba(255,138,31,0.24),transparent_32%),linear-gradient(135deg,rgba(255,107,0,0.18),rgba(18,18,18,0.70)_46%,rgba(5,5,5,0.86))] p-6 sm:p-7">
-                <div className="flex items-end justify-between gap-4">
+          <main className="mx-auto w-full max-w-[760px] min-w-0 pb-24 xl:pb-0">
+            <motion.section initial="hidden" animate="visible" variants={fadeUp} transition={{ duration: 0.45 }} className="mb-5 overflow-hidden rounded-[30px] border border-white/[0.08] bg-[#121212]/78 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl">
+              <div className="border-b border-white/[0.08] bg-[radial-gradient(circle_at_22%_0%,rgba(255,138,31,0.22),transparent_32%),linear-gradient(135deg,rgba(255,107,0,0.16),rgba(18,18,18,0.70)_46%,rgba(5,5,5,0.86))] p-5 sm:p-6">
+                <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#FF6B00]">Feed social</p>
-                    <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Actualite</h1>
-                    <p className="mt-3 max-w-2xl text-sm leading-6 text-[#9CA3AF] sm:text-base">Les publications reelles de la communaute BORO KULTURE, triees par date.</p>
+                    <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Actualite</h1>
+                    <p className="mt-3 max-w-xl text-sm leading-6 text-[#9CA3AF]">Les publications reelles de la communaute BORO KULTURE, triees par date.</p>
                   </div>
                   {user ? (
-                    <div className="hidden rounded-3xl border border-white/[0.08] bg-white/[0.055] p-4 text-right shadow-[0_0_34px_rgba(255,107,0,0.08)] backdrop-blur-xl sm:block">
-                      <div className="text-2xl font-black">{ownPostsCount}</div>
-                      <div className="text-xs font-bold uppercase tracking-[0.16em] text-[#9CA3AF]">Vos posts</div>
+                    <div className="hidden rounded-2xl border border-white/[0.08] bg-white/[0.055] p-3 text-right shadow-[0_0_34px_rgba(255,107,0,0.08)] backdrop-blur-xl sm:block">
+                      <div className="text-xl font-black">{ownPostsCount}</div>
+                      <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#9CA3AF]">Vos posts</div>
                     </div>
                   ) : null}
                 </div>
               </div>
 
-              <form onSubmit={handlePublish} className="p-4 sm:p-5" encType="multipart/form-data">
-                <div className="flex gap-4">
-                  <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full border border-white/[0.08] bg-[#FF6B00]/14 text-sm font-black text-[#FF6B00]">
+              <form onSubmit={handlePublish} className="p-4" encType="multipart/form-data">
+                <div className="flex gap-3">
+                  <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full border border-white/[0.08] bg-[#FF6B00]/14 text-sm font-black text-[#FF6B00]">
                     {user?.avatarUrl ? <img src={user.avatarUrl} alt={user.username} className="h-full w-full object-cover" style={getAvatarImageStyle(user)} /> : getInitials(user?.displayName || user?.username)}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -288,9 +288,9 @@ export default function FeedPage() {
                           setComposerError(null);
                         }
                       }}
-                      placeholder="Creer une publication..."
-                      rows={4}
-                      className="w-full resize-none rounded-[24px] border border-white/[0.08] bg-black/24 px-5 py-4 text-base leading-7 text-white outline-none transition placeholder:text-[#9CA3AF] focus:border-[#FF6B00]/70 focus:bg-black/32 focus:shadow-[0_0_0_4px_rgba(255,107,0,0.10)]"
+                      placeholder="Quoi de neuf sur BORO ?"
+                      rows={3}
+                      className="w-full resize-none rounded-[22px] border border-white/[0.08] bg-black/24 px-5 py-3 text-base leading-6 text-white outline-none transition placeholder:text-[#9CA3AF] focus:border-[#FF6B00]/70 focus:bg-black/32 focus:shadow-[0_0_0_4px_rgba(255,107,0,0.10)]"
                       disabled={isPublishing}
                     />
                     {mediaPreviews.length > 0 ? (
@@ -303,7 +303,7 @@ export default function FeedPage() {
                       </div>
                     ) : null}
                     {composerError ? <p className="mt-3 text-sm font-semibold text-red-200">{composerError}</p> : null}
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-2 text-[#9CA3AF]">
                         <input
                           id="post-media-upload"
@@ -324,7 +324,7 @@ export default function FeedPage() {
                           </button>
                         ) : null}
                       </div>
-                      <Button type="submit" disabled={isPublishing || (!content.trim() && mediaFiles.length === 0)} className="shadow-[0_0_34px_rgba(255,107,0,0.26)]">
+                      <Button type="submit" disabled={isPublishing || (!content.trim() && mediaFiles.length === 0)} className="px-5 shadow-[0_0_34px_rgba(255,107,0,0.26)]">
                         {isPublishing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                         Publier
                       </Button>
@@ -335,15 +335,15 @@ export default function FeedPage() {
             </motion.section>
 
             {isLoading ? (
-              <div className="grid gap-5 md:grid-cols-2">
-                {[0, 1, 2, 3].map((item) => (
+              <div className="grid gap-5">
+                {[0, 1, 2].map((item) => (
                   <div key={item} className="h-56 animate-pulse rounded-[30px] border border-white/[0.06] bg-[#121212]/80" />
                 ))}
               </div>
             ) : error ? (
               <section className="rounded-[30px] border border-white/[0.06] bg-[#121212]/88 p-8 text-red-200 shadow-2xl shadow-black/30">{error}</section>
             ) : posts.length === 0 ? (
-              <motion.section initial="hidden" animate="visible" variants={fadeUp} className="grid min-h-[420px] place-items-center rounded-[34px] border border-dashed border-white/[0.10] bg-[#121212]/72 p-8 text-center shadow-2xl shadow-black/30">
+              <motion.section initial="hidden" animate="visible" variants={fadeUp} className="grid min-h-[340px] place-items-center rounded-[30px] border border-dashed border-white/[0.10] bg-[#121212]/72 p-8 text-center shadow-2xl shadow-black/30">
                 <div>
                   <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-[#FF6B00]/12 text-[#FF6B00]">
                     <PenLine className="h-9 w-9" />
@@ -353,7 +353,7 @@ export default function FeedPage() {
                 </div>
               </motion.section>
             ) : (
-              <section className="columns-1 gap-5 md:columns-2 [column-fill:_balance]">
+              <section className="space-y-5">
                 {posts.map((post) => (
                   <PostCard
                     key={post.id}
