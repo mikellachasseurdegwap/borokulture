@@ -41,7 +41,7 @@ export function RegisterForm() {
       });
 
       setToken(data.token);
-      router.push("/feed");
+      router.push("/");
       router.refresh();
     } catch (requestError) {
       const apiError = requestError as Partial<ApiError>;

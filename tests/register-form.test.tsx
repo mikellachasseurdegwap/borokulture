@@ -78,6 +78,6 @@ describe("RegisterForm", () => {
     });
 
     expect(setTokenMock).toHaveBeenCalledWith("token-123");
-    expect(routerMock.push).toHaveBeenCalledWith("/feed");
+    expect(routerMock.push).toHaveBeenCalledWith("/");
   });
 });
