@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowDownRight,
@@ -12,6 +13,7 @@ import {
   Users,
   Wand2
 } from "lucide-react";
+import { clearWelcomePending, hasWelcomePending, isAuthenticated } from "@/lib/auth";
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 34 },
@@ -81,7 +83,17 @@ const platformPillars = [
   { icon: Wand2, name: "BORO Movement", level: "BORO KULTURE existe comme un mouvement culturel avant d'être une interface." }
 ];
 
-function HeroScene() {
+type HomeState = {
+  isLoggedIn: boolean;
+  isNewMember: boolean;
+};
+
+function HeroScene({ isLoggedIn, isNewMember }: HomeState) {
+  const primaryHref = isLoggedIn ? "/feed" : "/register";
+  const secondaryHref = isLoggedIn ? "/profile" : "/feed";
+  const primaryLabel = isNewMember ? "Entrer dans le feed" : isLoggedIn ? "Voir le feed" : "Entrer dans l'univers";
+  const secondaryLabel = isNewMember ? "Compléter mon profil" : isLoggedIn ? "Mon profil" : "Voir le feed";
+
   return (
     <section className="bk-hero">
       <div className="bk-hero__inner">
@@ -91,21 +103,29 @@ function HeroScene() {
           variants={stagger}
           className="bk-hero__copy"
         >
+          {isNewMember ? (
+            <motion.div variants={reveal} className="bk-section-label">
+              Bienvenue sur boro
+            </motion.div>
+          ) : null}
+
           <motion.h1 variants={reveal} className="bk-display">
-            BORO KULTURE fait circuler les voix créatives.
+            {isNewMember ? "Ton compte est prêt. Découvre BORO KULTURE." : "BORO KULTURE fait circuler les voix créatives."}
           </motion.h1>
 
           <motion.p variants={reveal} className="bk-lead">
-            Une plateforme culturelle ivoirienne pour publier, découvrir, connecter et donner une présence forte aux créateurs dans un univers chaud, artistique et vivant.
+            {isNewMember
+              ? "Avant d'entrer dans le feed, prends le temps de comprendre l'univers : une plateforme sociale pour publier, suivre, créer et faire circuler une énergie culturelle inspirée de la Côte d'Ivoire."
+              : "Une plateforme culturelle ivoirienne pour publier, découvrir, connecter et donner une présence forte aux créateurs dans un univers chaud, artistique et vivant."}
           </motion.p>
 
           <motion.div variants={reveal} className="bk-actions">
-            <Link href="/register" className="bk-action bk-action--primary">
-              <span>Entrer dans l'univers</span>
+            <Link href={primaryHref} onClick={() => clearWelcomePending()} className="bk-action bk-action--primary">
+              <span>{primaryLabel}</span>
               <ArrowUpRight size={20} />
             </Link>
-            <Link href="/feed" className="bk-action bk-action--secondary">
-              <span>Voir le feed</span>
+            <Link href={secondaryHref} onClick={() => clearWelcomePending()} className="bk-action bk-action--secondary">
+              <span>{secondaryLabel}</span>
               <ArrowDownRight size={19} />
             </Link>
           </motion.div>
@@ -271,7 +291,7 @@ function EcosystemSection() {
   );
 }
 
-function FinalSection() {
+function FinalSection({ isLoggedIn }: Pick<HomeState, "isLoggedIn">) {
   return (
     <section className="bk-final">
       <motion.div
@@ -284,12 +304,12 @@ function FinalSection() {
         <Sparkles size={24} />
         <h2>BORO KULTURE commence ici : un feed, des profils, une culture qui circule.</h2>
         <div className="bk-actions bk-actions--center">
-          <Link href="/register" className="bk-action bk-action--primary">
-            <span>Créer mon profil</span>
+          <Link href={isLoggedIn ? "/profile" : "/register"} onClick={() => clearWelcomePending()} className="bk-action bk-action--primary">
+            <span>{isLoggedIn ? "Compléter mon profil" : "Créer mon profil"}</span>
             <ArrowUpRight size={20} />
           </Link>
-          <Link href="/feed" className="bk-action bk-action--secondary">
-            <span>Explorer d'abord</span>
+          <Link href="/feed" onClick={() => clearWelcomePending()} className="bk-action bk-action--secondary">
+            <span>{isLoggedIn ? "Entrer dans le feed" : "Explorer d'abord"}</span>
             <ArrowDownRight size={19} />
           </Link>
         </div>
@@ -299,14 +319,26 @@ function FinalSection() {
 }
 
 export default function HomePage() {
+  const [homeState, setHomeState] = useState<HomeState>({
+    isLoggedIn: false,
+    isNewMember: false
+  });
+
+  useEffect(() => {
+    setHomeState({
+      isLoggedIn: isAuthenticated(),
+      isNewMember: hasWelcomePending()
+    });
+  }, []);
+
   return (
     <main className="boro-home">
       <div className="bk-noise" aria-hidden="true" />
-      <HeroScene />
+      <HeroScene {...homeState} />
       <CultureSection />
       <IdentitySection />
       <EcosystemSection />
-      <FinalSection />
+      <FinalSection isLoggedIn={homeState.isLoggedIn} />
     </main>
   );
 }
