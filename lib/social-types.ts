@@ -73,6 +73,13 @@ export type MeResponse = {
 
 export type PostsResponse = {
   posts: Post[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+  };
 };
 
 export type PostResponse = {

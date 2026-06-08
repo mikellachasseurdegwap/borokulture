@@ -96,10 +96,8 @@ export default function ProfilePage() {
         setIsLoading(true);
         setError(null);
 
-        const [{ data: meData }, { data: postsData }] = await Promise.all([
-          api.get<MeResponse>("/auth/me"),
-          api.get<PostsResponse>("/posts")
-        ]);
+        const { data: meData } = await api.get<MeResponse>("/auth/me");
+        const { data: postsData } = await api.get<PostsResponse>(`/search/users/${meData.user.username}/posts`);
 
         setUser(meData.user);
         setDraftUsername(meData.user.username);
