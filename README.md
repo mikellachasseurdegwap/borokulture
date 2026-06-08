@@ -81,6 +81,15 @@ Générer le client Prisma si nécessaire :
 npx prisma generate
 ```
 
+Créer un jeu de données de démonstration :
+
+```bash
+npm run prisma:seed
+```
+
+Le seed crée plusieurs comptes, publications, likes, commentaires et abonnements.
+Tous les comptes de démonstration utilisent le mot de passe `Password123!`.
+
 ## Lancement en développement
 
 Lancer le backend et le frontend :
