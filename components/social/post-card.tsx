@@ -3,13 +3,11 @@
 import { type FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Bookmark,
   Check,
   Edit3,
   Heart,
   Loader2,
   MessageCircle,
-  MoreHorizontal,
   Send,
   Share2,
   Sparkles,
@@ -208,21 +206,16 @@ export function PostCard({ post, currentUserId, onPostUpdated, onPostDeleted, on
       whileHover={{ y: -2 }}
       className="overflow-hidden rounded-[30px] border border-white/[0.08] bg-[#121212]/82 p-5 shadow-2xl shadow-black/24 backdrop-blur-2xl transition hover:border-white/[0.14] hover:shadow-[0_24px_70px_rgba(255,107,0,0.10)]"
     >
-      <header className="flex items-start justify-between gap-4">
-        <div className="flex min-w-0 items-center gap-3">
-          <Avatar user={post.user} />
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5 truncate text-sm font-black text-white">
-              <span className="truncate">{displayName}</span>
-              {post.user.isVerified ? <Sparkles className="h-3.5 w-3.5 text-[#3B82F6]" fill="#3B82F6" /> : null}
-            </div>
-            <div className="truncate text-xs font-bold text-[#FF8A1F]">@{post.user.username}</div>
-            <time className="text-xs font-semibold text-[#9CA3AF]" dateTime={post.createdAt}>{formatDateTime(post.createdAt)}</time>
+      <header className="flex min-w-0 items-start gap-3">
+        <Avatar user={post.user} />
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5 truncate text-sm font-black text-white">
+            <span className="truncate">{displayName}</span>
+            {post.user.isVerified ? <Sparkles className="h-3.5 w-3.5 text-[#3B82F6]" fill="#3B82F6" /> : null}
           </div>
+          <div className="truncate text-xs font-bold text-[#FF8A1F]">@{post.user.username}</div>
+          <time className="text-xs font-semibold text-[#9CA3AF]" dateTime={post.createdAt}>{formatDateTime(post.createdAt)}</time>
         </div>
-        <Button variant="ghost" size="sm" className="hover:text-[#FF8A1F]" aria-label="Options publication">
-          <MoreHorizontal className="h-5 w-5" />
-        </Button>
       </header>
 
       {(isEditing || hasTextContent) ? (
@@ -292,9 +285,6 @@ export function PostCard({ post, currentUserId, onPostUpdated, onPostDeleted, on
           <motion.button whileTap={{ scale: 0.94 }} type="button" onClick={sharePost} className="rounded-full border border-white/[0.08] bg-white/[0.045] p-2 transition hover:border-[#FF6B00]/45 hover:bg-[#FF6B00]/13 hover:text-[#FF8A1F]" aria-label="Partager">
             <Share2 className="h-5 w-5" />
           </motion.button>
-          <button type="button" className="rounded-full border border-white/[0.06] bg-white/[0.035] p-2 opacity-50" disabled title="Sauvegardes non encore persistées">
-            <Bookmark className="h-5 w-5" />
-          </button>
         </div>
 
         {post.canEdit || post.canDelete ? (

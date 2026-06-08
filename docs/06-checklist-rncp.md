@@ -59,6 +59,8 @@
 - Comment le backend empêche de modifier le contenu d'un autre utilisateur.
 - Comment la contrainte unique empêche les likes en double.
 - Comment les fichiers uploadés sont validés.
+- Pourquoi les uploads sont stockés localement pour la démo, et pourquoi un
+  stockage externe est nécessaire en production.
 - Comment l'interface reste responsive.
 
 ## Utilisation de l'IA
@@ -85,6 +87,7 @@ Formulation possible :
 - [ ] La connexion fonctionne.
 - [ ] Les fonctionnalités sociales fonctionnent.
 - [ ] Les uploads fonctionnent.
+- [ ] La limite du stockage local des uploads est expliquée au jury.
 - [ ] Les tests passent.
 - [ ] Le build passe.
 - [ ] Le README est complet.

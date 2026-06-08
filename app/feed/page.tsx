@@ -41,6 +41,8 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 }
 };
 
+const FEED_PAGE_SIZE = 10;
+
 export default function FeedPage() {
   const [user, setUser] = useState<SocialUser | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -48,7 +50,10 @@ export default function FeedPage() {
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [composerError, setComposerError] = useState<string | null>(null);
@@ -66,11 +71,18 @@ export default function FeedPage() {
 
         const [{ data: meData }, { data: postsData }] = await Promise.all([
           api.get<MeResponse>("/auth/me"),
-          api.get<PostsResponse>("/posts")
+          api.get<PostsResponse>("/posts", {
+            params: {
+              page: 1,
+              limit: FEED_PAGE_SIZE
+            }
+          })
         ]);
 
         setUser(meData.user);
         setPosts(postsData.posts);
+        setCurrentPage(postsData.pagination?.page || 1);
+        setHasNextPage(Boolean(postsData.pagination?.hasNextPage));
       } catch (requestError) {
         const apiError = requestError as ApiError;
         setError(apiError.message || "Impossible de charger le feed");
@@ -93,7 +105,7 @@ export default function FeedPage() {
       return 0;
     }
 
-    return posts.filter((post) => post.user.id === user.id).length;
+    return user.postCount ?? posts.filter((post) => post.user.id === user.id).length;
   }, [posts, user]);
 
   const showToast = (message: string) => {
@@ -164,6 +176,7 @@ export default function FeedPage() {
       });
 
       setPosts((currentPosts) => [data.post, ...currentPosts]);
+      setUser((currentUser) => currentUser ? { ...currentUser, postCount: (currentUser.postCount ?? 0) + 1 } : currentUser);
       setContent("");
       clearMedia();
       showToast("Publication creee");
@@ -175,12 +188,49 @@ export default function FeedPage() {
     }
   };
 
+  const loadMorePosts = async () => {
+    if (isLoadingMore || !hasNextPage) {
+      return;
+    }
+
+    try {
+      setIsLoadingMore(true);
+      setError(null);
+      const nextPage = currentPage + 1;
+      const { data } = await api.get<PostsResponse>("/posts", {
+        params: {
+          page: nextPage,
+          limit: FEED_PAGE_SIZE
+        }
+      });
+
+      setPosts((currentPosts) => {
+        const existingIds = new Set(currentPosts.map((post) => post.id));
+        const nextPosts = data.posts.filter((post) => !existingIds.has(post.id));
+
+        return [...currentPosts, ...nextPosts];
+      });
+      setCurrentPage(data.pagination?.page || nextPage);
+      setHasNextPage(Boolean(data.pagination?.hasNextPage));
+    } catch (requestError) {
+      const apiError = requestError as ApiError;
+      setError(apiError.message || "Impossible de charger plus de publications");
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
+
   const updatePost = (updatedPost: Post) => {
     setPosts((currentPosts) => currentPosts.map((post) => (post.id === updatedPost.id ? updatedPost : post)));
   };
 
   const deletePost = (postId: string) => {
+    const deletedPost = posts.find((post) => post.id === postId);
+
     setPosts((currentPosts) => currentPosts.filter((post) => post.id !== postId));
+    if (deletedPost?.user.id === user?.id) {
+      setUser((currentUser) => currentUser ? { ...currentUser, postCount: Math.max((currentUser.postCount ?? 1) - 1, 0) } : currentUser);
+    }
     showToast("Publication supprimee");
   };
 
@@ -353,18 +403,29 @@ export default function FeedPage() {
                 </div>
               </motion.section>
             ) : (
-              <section className="space-y-5">
-                {posts.map((post) => (
-                  <PostCard
-                    key={post.id}
-                    post={post}
-                    currentUserId={user?.id}
-                    onPostUpdated={updatePost}
-                    onPostDeleted={deletePost}
-                    onToast={showToast}
-                  />
-                ))}
-              </section>
+              <>
+                <section className="space-y-5">
+                  {posts.map((post) => (
+                    <PostCard
+                      key={post.id}
+                      post={post}
+                      currentUserId={user?.id}
+                      onPostUpdated={updatePost}
+                      onPostDeleted={deletePost}
+                      onToast={showToast}
+                    />
+                  ))}
+                </section>
+
+                {hasNextPage ? (
+                  <div className="mt-6 flex justify-center">
+                    <Button type="button" variant="secondary" onClick={loadMorePosts} disabled={isLoadingMore}>
+                      {isLoadingMore ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                      {isLoadingMore ? "Chargement..." : "Charger plus"}
+                    </Button>
+                  </div>
+                ) : null}
+              </>
             )}
           </main>
         </div>

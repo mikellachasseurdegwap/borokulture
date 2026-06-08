@@ -109,6 +109,16 @@ const findOwnedPost = async (postId, userId) => {
   return post;
 };
 
+const parsePaginationValue = (value, fallback, max) => {
+  const parsedValue = Number.parseInt(value, 10);
+
+  if (!Number.isFinite(parsedValue) || parsedValue < 1) {
+    return fallback;
+  }
+
+  return Math.min(parsedValue, max);
+};
+
 export const createPost = async (req, res, next) => {
   try {
     const userId = req.userId;
@@ -159,14 +169,33 @@ export const createPost = async (req, res, next) => {
 export const getPosts = async (req, res, next) => {
   try {
     const viewerId = req.userId;
-    const posts = await prisma.post.findMany({
-      orderBy: {
-        createdAt: "desc"
-      },
-      select: postSelect(viewerId)
-    });
+    const page = parsePaginationValue(req.query.page, 1, 1000);
+    const limit = parsePaginationValue(req.query.limit, 10, 50);
+    const skip = (page - 1) * limit;
 
-    return res.status(200).json({ posts: posts.map((post) => normalizePost(post, viewerId)) });
+    const [posts, total] = await prisma.$transaction([
+      prisma.post.findMany({
+        skip,
+        take: limit,
+        orderBy: {
+          createdAt: "desc"
+        },
+        select: postSelect(viewerId)
+      }),
+      prisma.post.count()
+    ]);
+    const totalPages = Math.max(Math.ceil(total / limit), 1);
+
+    return res.status(200).json({
+      posts: posts.map((post) => normalizePost(post, viewerId)),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNextPage: page < totalPages
+      }
+    });
   } catch (error) {
     return next(error);
   }

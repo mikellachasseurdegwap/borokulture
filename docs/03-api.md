@@ -23,6 +23,10 @@
 Les images acceptées sont : `jpg`, `png`, `webp`.
 La taille maximum est de 2 Mo par image.
 
+En démo locale, les fichiers sont enregistrés dans `public/uploads/profiles`.
+Ce stockage local n'est pas adapté à une production stateless : pour une mise en
+ligne réelle, il devra être remplacé par un stockage externe durable.
+
 Les valeurs de recadrage avatar permettent d'ajuster l'image dans le cercle :
 
 - `avatarPositionX` : position horizontale de 0 à 100.
@@ -53,6 +57,10 @@ Limites :
 
 - 4 images maximum par publication.
 - 5 Mo maximum par image.
+
+En démo locale, les fichiers sont enregistrés dans `public/uploads/posts`. Ce
+choix est suffisant pour tester le parcours utilisateur en local, mais une vraie
+production devra utiliser Cloudinary, S3, Supabase Storage ou Vercel Blob.
 
 Règles de sécurité :
 

@@ -10,17 +10,18 @@ import {
   updatePost
 } from "../controllers/posts.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
+import { commentCreationRateLimiter, postCreationRateLimiter } from "../middleware/rate-limit.middleware.js";
 import { postMediaUpload } from "../middleware/upload.middleware.js";
 
 const router = Router();
 
 router.get("/", authMiddleware, getPosts);
-router.post("/", authMiddleware, postMediaUpload, createPost);
+router.post("/", authMiddleware, postCreationRateLimiter, postMediaUpload, createPost);
 router.patch("/:postId", authMiddleware, updatePost);
 router.delete("/:postId", authMiddleware, deletePost);
 router.post("/:postId/likes", authMiddleware, likePost);
 router.delete("/:postId/likes", authMiddleware, unlikePost);
-router.post("/:postId/comments", authMiddleware, addComment);
+router.post("/:postId/comments", authMiddleware, commentCreationRateLimiter, addComment);
 router.delete("/:postId/comments/:commentId", authMiddleware, deleteComment);
 
 export default router;
