@@ -53,9 +53,15 @@ Variables principales :
 DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/boro_kulture"
 JWT_SECRET="votre_secret_jwt"
 JWT_EXPIRES_IN="7d"
+CLIENT_URL="http://localhost:3000"
 NEXT_PUBLIC_API_URL="http://localhost:3001"
 PORT=3001
 ```
+
+`CLIENT_URL` sert à limiter les origines autorisées par CORS. En développement,
+le backend autorise aussi `http://localhost:3000` et `http://127.0.0.1:3000`
+pour faciliter la démo locale. En production, il faut renseigner l'URL réelle
+du frontend afin de ne pas accepter les requêtes venant de n'importe quel site.
 
 ## Base de données
 
