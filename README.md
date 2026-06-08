@@ -63,6 +63,10 @@ le backend autorise aussi `http://localhost:3000` et `http://127.0.0.1:3000`
 pour faciliter la démo locale. En production, il faut renseigner l'URL réelle
 du frontend afin de ne pas accepter les requêtes venant de n'importe quel site.
 
+Le backend applique aussi un rate limiting simple sur les routes sensibles :
+connexion, inscription, création de publication et création de commentaire. Cela
+réduit les risques de brute force et de spam pendant la démo et en préproduction.
+
 ## Base de données
 
 Appliquer les migrations Prisma :
