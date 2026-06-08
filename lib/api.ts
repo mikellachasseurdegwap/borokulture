@@ -8,12 +8,9 @@ export type ApiError = {
 };
 
 const DEFAULT_API_URL = "http://localhost:3001";
-// Ensure API URL is properly set - use environment variable or fallback to localhost
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL 
   ? process.env.NEXT_PUBLIC_API_URL.trim() 
   : DEFAULT_API_URL;
-
-console.log('[API] Base URL:', API_BASE_URL);
 
 const isBrowser = () => typeof window !== "undefined";
 

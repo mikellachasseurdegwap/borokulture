@@ -7,13 +7,13 @@
 
 ## Phase 2: Backend API
 - [x] 2.1 Mettre a jour le schema Prisma generation
-- [x] 2.2 Ameliorer la route de recherche (search.route.js) - AJOUTÉ DEBUG LOGS
+- [x] 2.2 Ameliorer la route de recherche (search.route.js)
 - [x] 2.3 Ajouter la route pour recuperer un utilisateur par username
 - [x] 2.4 Configuration CORS Ameliorée (src/app.js)
 - [x] 2.5 Configuration API URL (lib/api.ts)
-- [x] 2.6 Test API - FONCTIONNE! (curl test retourne +users)
+- [x] 2.6 Tester l'API de recherche
 
 ## Phase 3: Frontend
 - [x] 3.1 Ameliorer le composant UserSearch (affichage enrichi)
 - [x] 3.2 Modifier la navigation vers /profile/username
-- [x] 3.3 Tester la recherche - SYSTÈME FONCTIONNEL!
+- [x] 3.3 Tester la recherche
