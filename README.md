@@ -113,6 +113,28 @@ npm test
 npm run build
 ```
 
+## Gestion des uploads
+
+Les images de profil, couvertures et images de posts sont stockées localement
+dans `public/uploads` via Multer. Ce choix est volontaire pour la démo RNCP :
+il permet de tester simplement les uploads en local sans service externe.
+
+Limites connues :
+
+- `public/uploads` est ignoré par Git.
+- Les fichiers uploadés ne doivent pas être considérés comme persistants sur une
+  plateforme stateless comme Vercel.
+- En production réelle, il faut remplacer ce stockage local par un service dédié
+  comme Cloudinary, Amazon S3, Supabase Storage ou Vercel Blob.
+
+Évolution prévue pour la production :
+
+- conserver les validations actuelles côté backend (`jpg`, `png`, `webp`, taille maximum) ;
+- envoyer les fichiers vers un stockage externe ;
+- enregistrer en base uniquement l'URL publique retournée par le service ;
+- prévoir la suppression des anciens fichiers lors du remplacement d'un avatar,
+  d'une couverture ou d'une publication.
+
 ## Structure du projet
 
 - `app/` : pages Next.js
